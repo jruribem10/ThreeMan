@@ -27,7 +27,11 @@
         <center>
         <h5 class="card-title">{{ product.name }}</h5>
         <br/>
-        <p class="card-text justified">{{ product.description }}</p>
+        <p class="card-text justified">{{ product.descripcion }}</p>
+        <br/>
+        <p class="card-text justified">Amargor: {{ product.amargor }}</p>
+         <br/>
+        <p class="card-text justified">Categoria: {{ product.categories }}</p>
         
         {% if product.is_sale %}
         <div class="d-flex justify-content-center small text-warning mb-2">

@@ -38,7 +38,7 @@
 
         {% else %}
             
-         <b>Categoria:</b> {{ product.categoria }}<br>
+         <b>Categoria:</b> {{ product.categories }}<br>
          <b>alcohol:</b> {{ product.alcohol }} %<br>
          <b>color:</b> {{ product.color }}<br>
          <b>Amargor:</b> {{ product.amargor }}<br>
@@ -83,7 +83,7 @@ $(document).on('click', '#add-cart', function(e){
         type: 'POST',
         url: '{% url 'cart_add' %}',
         data: {
-            product_id: $(this).val(),  // Cambio aquí
+            product_id: $('#add-cart').val(),
             product_qty: $('#qty-cart option:selected').text(),
             csrfmiddlewaretoken: '{{ csrf_token }}',
             action: 'post'
@@ -92,16 +92,21 @@ $(document).on('click', '#add-cart', function(e){
             document.getElementById("cart_quantity").textContent = json.qty;
             location.reload();
         },
-        error: function(xhr, errmsg, err){
+       error: function(xhr, errmsg, err){
 
         }
-    });
-});
 
+
+    });
 
 
 
 })
+
+
+
+
+</script>
 
 
 {% endblock %}
