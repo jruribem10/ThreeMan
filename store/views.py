@@ -9,21 +9,42 @@ from django import forms
 # Create your views here.
 
 
-def search(request):
-	# Determine if they filled out the form
-	if request.method == "POST":
-		searched = request.POST['searched']
-		# Query The Products DB Model
-		searched = Product.objects.filter(name__icontains=searched)
-		# Test for null
-		if not searched:
-			messages.success(request, "That Product Does Not Exist...Please try Again.")
-			return render(request, "search.html", {})
-		else:
-			return render(request, "search.html", {'searched':searched})
-	else:
-		return render(request, "search.html", {})	
 
+
+def filter_products(request):
+    # Obtener los parámetros del filtro del request GET
+    color = request.GET.get('color')
+    alcohol = request.GET.getlist('alcohol')
+    amargor = request.GET.getlist('amargor')
+    
+    # Filtrar productos basados en los parámetros
+    filtered_products = Product.objects.all()
+    if color:
+        filtered_products = filtered_products.filter(color=color)
+    if alcohol:
+        filtered_products = filtered_products.filter(alcohol__in=alcohol)
+    if amargor:
+        filtered_products = filtered_products.filter(amargor__in=amargor)
+    
+    # Renderizar el template con los productos filtrados
+    return render(request, 'filtered_products.html', {'products': filtered_products})
+
+
+
+def search(request):
+    # Determine if they submitted the form
+    if 'searched' in request.GET:
+        searched = request.GET['searched']
+        # Query the Products DB Model
+        searched_results = Product.objects.filter(name__icontains=searched)
+        # Test for empty query results
+        if not searched_results:
+            messages.success(request, "Ese producto no existe. Por favor, inténtelo de nuevo.")
+            return render(request, "search.html", {})
+        else:
+            return render(request, "search.html", {'searched': searched_results})
+    else:
+        return render(request, "search.html", {})
 
 
 def update_info(request):

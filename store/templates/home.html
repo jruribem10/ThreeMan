@@ -1,96 +1,153 @@
 {% extends 'base.html' %}
-
-
 {% block content %}
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Filtro de productos -->
+            <form method="GET" action="{% url 'filter_products' %}" class="col-md-3">
+                <div class="card">
+                    <div class="card-header">Filtrar Productos</div>
+                    <div class="card-body">
+                        <!-- Subcategoría por color -->
+                        <h5>Color de Cerveza</h5>
+                        <select class="form-select mb-3" aria-label="Color de Cerveza" name="color">
+                            <option selected>Selecciona un color</option>
+                            <option value="Roja">Roja</option>
+                            <option value="Negra">Negra</option>
+                            <option value="Rubia">Rubia</option>
+                        </select>
 
-        <!-- Header-->
-        <header class="bg-dark py-5">
-            <div class="container px-4 px-lg-5 my-5">
-                <div class="text-center text-white">
-                    <h1 class="display-4 fw-bolder">Cervezas artesanales</h1>
-                    <p class="lead fw-normal text-white-50 mb-0">¡Imagina un paraíso cervecero donde cada sorbo te transporta a un mundo de sabores únicos y experiencias inolvidables! En nuestro santuario de la cerveza, no solo ofrecemos bebidas, sino auténticas obras maestras artesanales, cuidadosamente elaboradas en las tierras fértiles de Antioquia.</p>
-                </div>
-            </div>
-        </header>
-        <!-- Section-->
-        <section class="py-5">
+                        <!-- Subcategoría por alcohol -->
+                        <h5>Nivel de Alcohol</h5>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="Bajo" id="alcohol_bajo" name="alcohol">
+                            <label class="form-check-label" for="alcohol_bajo">Bajo</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="Medio" id="alcohol_medio" name="alcohol">
+                            <label class="form-check-label" for="alcohol_medio">Medio</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="Alto" id="alcohol_alto" name="alcohol">
+                            <label class="form-check-label" for="alcohol_alto">Alto</label>
+                        </div>
 
-            <div class="container px-4 px-lg-5 mt-5">
-            
-                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                        <!-- Subcategoría por nivel de amargor -->
+                        <h5>Nivel de Amargor</h5>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="Bajo" id="amargor_bajo" name="amargor">
+                            <label class="form-check-label" for="amargor_bajo">Bajo</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="Medio" id="amargor_medio" name="amargor">
+                            <label class="form-check-label" for="amargor_medio">Medio</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="Alto" id="amargor_alto" name="amargor">
+                            <label class="form-check-label" for="amargor_alto">Alto</label>
+                        </div>
                         
-                {% for product in products %}
-                    {% if product.is_sale %}
-                    
-                    <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Sale badge-->
-                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
-
-                            <!-- Product image-->
-                            <img class="card-img-top" src="{{ product.image.url }}" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">{{ product.name }}</h5>
-                                    <!-- Sale -->
-                <div class="d-flex justify-content-center small text-warning mb-2">
-                <div class="bi-star-fill"></div>
-                &nbsp;&nbsp;Sale!&nbsp;&nbsp;
-                <div class="bi-star-fill"></div>
+                        <div class="row justify-content-center mt-3">
+                            <button class="btn btn-outline-secondary" type="submit">Aplicar Filtros</button>
+                        </div>
+                    </div>
                 </div>
-
-                                    <!-- Product price-->
-                                    <strike>
-                                    ${{ product.price }}
-                                    </strike>
-                                    &nbsp;
-                                    ${{ product.sale_price }}
+            </form>
+            <!-- Fin del filtro de productos -->
+            
+            <!-- Barra de búsqueda -->
+            <div class="col-md-9">
+                <div class="container">
+                    <div class="row justify-content-start">
+                        <div class="col-md-6">
+                            <form method="GET" action="{% url 'search' %}">
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Buscar productos" name="searched">
+                                    <button class="btn btn-outline-secondary" type="submit">Buscar</button>
                                 </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-    <div class="text-center">
-        <a class="btn btn-outline-dark mt-auto" href="{% url 'product' product.id  %}">View Product</a>
-    </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
-
-
-                    {% else %}
-                <div class="col mb-5">
-                        <div class="card h-100">
-                            <!-- Product image-->
-                            <img class="card-img-top" src="{{ product.image.url }}" alt="..." />
-                            <!-- Product details-->
-                            <div class="card-body p-4">
-                                <div class="text-center">
-                                    <!-- Product name-->
-                                    <h5 class="fw-bolder">{{ product.name }}</h5>
-                                    <!-- Product color-->
-                                    <h6 class="fw-bolder"> Color: {{ product.color }}</h6>
-                                    <!-- Product alcohol-->
-                                    <h6 class="fw-bolder"> %{{ product.alcohol }}</h6>
-                                    <!-- Product price-->
-                                    ${{ product.price }}
-
-                                   
-                                </div>
-                            </div>
-                            <!-- Product actions-->
-                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-    <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="{% url 'product' product.id %}">View Product</a></div>
-                            </div>
+                </div>
+                
+                <!-- Header-->
+                <header class="bg-dark py-5">
+                    <div class="container px-4 px-lg-5 my-5">
+                        <div class="text-center text-white">
+                            <h1 class="display-4 fw-bolder">Cervezas artesanales</h1>
+                            <p class="lead fw-normal text-white-50 mb-0">¡Imagina un paraíso cervecero donde cada sorbo te transporta a un mundo de sabores únicos y experiencias inolvidables! En nuestro santuario de la cerveza, no solo ofrecemos bebidas, sino auténticas obras maestras artesanales, cuidadosamente elaboradas en las tierras fértiles de Antioquia.</p>
                         </div>
                     </div>
-
-                        {% endif %}
-                    {% endfor %}
-
-
+                </header>
+                
+                <!-- Section de productos -->
+                <section class="py-5">
+                    <div class="container px-4 px-lg-5 mt-5">
+                        <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                            {% for product in products %}
+                                {% if product.is_sale %}
+                                    <div class="col mb-5">
+                                        <div class="card h-100">
+                                            <!-- Sale badge-->
+                                            <div class="badge bg-dark text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Sale</div>
+                                            <!-- Product image-->
+                                            <img class="card-img-top custom-img-size" src="{{ product.image.url }}" alt="..." style="height: 400px;" />
+                                            <!-- Product details-->
+                                            <div class="card-body p-4">
+                                                <div class="text-center">
+                                                    <!-- Product name-->
+                                                    <h5 class="fw-bolder">{{ product.name }}</h5>
+                                                    <!-- Sale -->
+                                                    <div class="d-flex justify-content-center small text-warning mb-2">
+                                                        <div class="bi-star-fill"></div>
+                                                        &nbsp;&nbsp;Sale!&nbsp;&nbsp;
+                                                        <div class="bi-star-fill"></div>
+                                                    </div>
+                                                    <!-- Product price-->
+                                                    <strike>${{ product.price }}</strike> &nbsp; ${{ product.sale_price }}
+                                                </div>
+                                            </div>
+                                            <!-- Product actions-->
+                                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                                <div class="text-center">
+                                                    <a class="btn btn-outline-dark mt-auto" href="{% url 'product' product.id  %}">View Product</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="col mb-5">
+                                        <div class="card h-100">
+                                            <!-- Product image-->
+                                            <img class="card-img-top custom-img-size" src="{{ product.image.url }}" alt="..." style="height: 400px;" />
+                                            <!-- Product details-->
+                                            <div class="card-body p-4">
+                                                <div class="text-center">
+                                                    <!-- Product name-->
+                                                    <h5 class="fw-bolder">{{ product.name }}</h5>
+                                                    <!-- Product color-->
+                                                    <h6 class="fw-bolder">Color:
+                                                        {{ product.color }}</h6>
+                                                    <!-- Product alcohol-->
+                                                    <h6 class="fw-bolder">%{{ product.alcohol }}</h6>
+                                                    <!-- Product price-->
+                                                    ${{ product.price }}
+                                                </div>
+                                            </div>
+                                            <!-- Product actions-->
+                                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                                <div class="text-center">
+                                                    <a class="btn btn-outline-dark mt-auto" href="{% url 'product' product.id %}">View Product</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </section>
             </div>
-        </section>
-
+        </div>
+    </div>
 {% endblock %}
+
