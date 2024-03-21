@@ -1,3 +1,4 @@
+#models.py
 from django.db import models
 import datetime
 from django.contrib.auth.models import User
@@ -63,11 +64,17 @@ class Customer (models.Model):
         return f'{self.first_name}{self.last_name}'
 
 class Product(models.Model):
+
+    AMARGOR_CHOICES = [
+        ('Bajo', 'Bajo'),
+        ('Medio', 'Medio'),
+        ('Alto', 'Alto'),
+    ]
     name = models.CharField(max_length=255)
     categories =models.ForeignKey(Category,on_delete=models.CASCADE,default=1)  # Campo correspondiente a 'tipo' en el formulario
     alcohol = models.FloatField()  # Campo correspondiente a 'alcohol' en el formulario
     color = models.CharField(max_length=255)  # Campo correspondiente a 'color' en el formulario
-    amargor = models.CharField(max_length=255)  # Campo correspondiente a 'amargor' en el formulario
+    amargor = models.CharField(max_length=255, choices=AMARGOR_CHOICES)
     descripcion = models.TextField()  # Campo correspondiente a 'descripcion' en el formulario
     price = models.FloatField()  # Campo correspondiente a 'precio' en el formulario
     casa = models.CharField(max_length=255)  # Campo correspondiente a 'casa' en el formulario
