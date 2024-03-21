@@ -1,3 +1,4 @@
+#views.py
 from django.shortcuts import render,redirect
 from.models import Product,Category,Profile
 from django.contrib.auth import authenticate,login,logout
@@ -6,28 +7,30 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .forms import SignUpForm,UpdateUserForm,ChangePasswordForm,UserInfoForm
 from django import forms
+from django.db.models import Q
+
 # Create your views here.
-
-
 
 
 def filter_products(request):
     # Obtener los parámetros del filtro del request GET
     color = request.GET.get('color')
-    alcohol = request.GET.getlist('alcohol')
-    amargor = request.GET.getlist('amargor')
+    amargor = request.GET.get('amargor')
+    in_discount = request.GET.get('is_sale')  # Cambiado a 'is_sale' para que coincida con el nombre del checkbox
     
     # Filtrar productos basados en los parámetros
     filtered_products = Product.objects.all()
     if color:
         filtered_products = filtered_products.filter(color=color)
-    if alcohol:
-        filtered_products = filtered_products.filter(alcohol__in=alcohol)
     if amargor:
-        filtered_products = filtered_products.filter(amargor__in=amargor)
+        filtered_products = filtered_products.filter(amargor=amargor)
+    if in_discount == 'true':  # Si in_discount es 'true', filtrar los productos en descuento
+        filtered_products = filtered_products.filter(is_sale=True)
     
-    # Renderizar el template con los productos filtrados
+    # Renderizar el template con los productos filtrados y las opciones de categorías y amargor
     return render(request, 'filtered_products.html', {'products': filtered_products})
+
+
 
 
 
@@ -48,29 +51,24 @@ def search(request):
 
 
 def update_info(request):
-	if request.user.is_authenticated:
-		# Get Current User
-		current_user = Profile.objects.get(user__id=request.user.id)
-		# Get Current User's Shipping Info
-		#shipping_user = ShippingAddress.objects.get(user__id=request.user.id)
-		
-		# Get original User Form
-		form = UserInfoForm(request.POST or None, instance=current_user)
-		# Get User's Shipping Form
-		#shipping_form = ShippingForm(request.POST or None, instance=shipping_user)		
-		if form.is_valid(): #or shipping_form.is_valid():
-			# Save original form
-			form.save()
-			# Save shipping form
-			#shipping_form.save()
+    if request.user.is_authenticated:
+        try:
+            # Attempt to get the current user's profile
+            current_user_profile = Profile.objects.get(user=request.user)
+        except Profile.DoesNotExist:
+            # If the profile doesn't exist, create a new one
+            current_user_profile = Profile(user=request.user)
+            current_user_profile.save()
 
-			messages.success(request, "Your Info Has Been Updated!!")
-			return redirect('home')
-		return render(request, "update_info.html", {})
-	else:
-		messages.success(request, "You Must Be Logged In To Access That Page!!")
-		return redirect('home')
-
+        form = UserInfoForm(request.POST or None, instance=current_user_profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Your Info Has Been Updated!!")
+            return redirect('home')
+        return render(request, "update_info.html", {'form': form})
+    else:
+        messages.error(request, "You Must Be Logged In To Access That Page!!")
+        return redirect('home')
 
 def update_password(request):
 	if request.user.is_authenticated:
