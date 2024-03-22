@@ -92,6 +92,7 @@
             <h3>Total: ${{ totals }}</h3>
 
             <br/><br/><br/>
+            <a href="{% url 'pdf' %}" class = "btn btn-info" target="_blank">Generar Factura</a>
         	{% else %}
         	Tu carrito esta vacio...
         	<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
@@ -158,10 +159,14 @@ $(document).on('click', '.delete-product', function(e){
 
 })
 
+</script>
 
+<script>
+
+var generatePDFButton = document.getElementById("generate-pdf-button")
+generatePDFButton.href = `cart/?generate_pdf=true`
 
 
 </script>
-
 
 {% endblock %}

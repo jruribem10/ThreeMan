@@ -1,9 +1,10 @@
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, HttpResponse
 from .cart import Cart
 from store.models import Product
 from django.http import JsonResponse
 from django.contrib import messages
+from xhtml2pdf import pisa
 
 def cart_summary(request):
 	# Get the cart
@@ -67,3 +68,33 @@ def cart_update(request):
 		#return redirect('cart_summary')
 		messages.success(request, ("Your Cart Has Been Updated..."))
 		return response
+
+def pdf(request):
+    # Create a Cart instance
+    cart = Cart(request)
+    
+    # Retrieve cart products, quantities, and totals
+    cart_products = cart.get_prods
+    quantities = cart.get_quants
+    totals = cart.cart_total()
+
+    # Pass the necessary data to the HTML template
+    context = {
+        "cart_products": cart_products,
+        "quantities": quantities,
+        "totals": totals,
+    }
+
+    # Render the HTML template with the data
+    html_template = 'pdf.html'
+    html_content = render(request, html_template, context)
+
+    # Generate PDF
+    response = HttpResponse(content_type='application/cart/pdf')
+    response['Content-Disposition'] = 'attachment; filename="output.pdf"'
+
+    pisa_status = pisa.CreatePDF(html_content.content, dest=response)
+    if pisa_status.err:
+        return HttpResponse('Error generating PDF: %s' % pisa_status.err)
+
+    return response
