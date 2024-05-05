@@ -1,0 +1,2 @@
+oe en esta carpeta hay que hacer todo lo de serializar y esas cosas para la api
+la api con los modelos y toda la vuelta.
