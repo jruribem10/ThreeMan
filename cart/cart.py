@@ -40,7 +40,7 @@ class Cart():
 
     def cart_total(self):
         # Get product IDS
-        product_ids = self.cart.keys()
+        product_ids = [int(key) for key in self.cart.keys()]  # Convert keys to integers
         # lookup those keys in our products database model
         products = Product.objects.filter(id__in=product_ids)
         # Get quantities
@@ -49,7 +49,7 @@ class Cart():
         total = 0
 
         for key, value in quantities.items():
-            # Convert key string into into so we can do math
+            # Convert key string into int so we can do math
             key = int(key)
             for product in products:
                 if product.id == key:
