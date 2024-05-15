@@ -1,6 +1,7 @@
 from django.urls import path
 from .import views
 from .views import filter_products
+from .views import ProductListView
 urlpatterns=[
     path('', views.home,name='home'),
     path('about/', views.about,name='about'),
@@ -15,6 +16,7 @@ urlpatterns=[
     path('category_summary/', views.category_summary, name='category_summary'),
     path('search/', views.search,name='search'),
     path('filter/', filter_products, name='filter_products'),
+    path('api/products/', ProductListView.as_view(), name='product-list'),
     
 
 

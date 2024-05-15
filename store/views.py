@@ -8,8 +8,14 @@ from django.contrib.auth.forms import UserCreationForm
 from .forms import SignUpForm,UpdateUserForm,ChangePasswordForm,UserInfoForm
 from django import forms
 from django.db.models import Q
+from rest_framework import generics
+from .models import Product
+from .serializers import ProductSerializer
 
-# Create your views here.
+#vista para la API
+class ProductListView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
 
 
 def filter_products(request):
