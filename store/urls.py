@@ -18,6 +18,7 @@ urlpatterns=[
     path('filter/', filter_products, name='filter_products'),
     path('api/products/', ProductListView.as_view(), name='product-list'),
     
+    
 
 
 

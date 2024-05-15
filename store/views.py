@@ -18,6 +18,9 @@ class ProductListView(generics.ListAPIView):
     serializer_class = ProductSerializer
 
 
+#test
+
+
 def filter_products(request):
     # Obtener los parámetros del filtro del request GET
     color = request.GET.get('color')
