@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'store',
     'cart',
     'calendarapp',
+    'mapapp',
     'rest_framework',
     'corsheaders',
 ]
