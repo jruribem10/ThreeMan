@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<head>
+    <title>Google Maps Centered Map</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDjJ3Nlxsy2oX8ba21piBWwez8vOA4fLSc&libraries=places"></script>
+    <script>
+        function initMap() {
+            var mapCenter = {lat: 6.2442, lng: -75.5812};
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 14,
+                center: mapCenter
+            });
+
+            var marker = new google.maps.Marker({
+                position: mapCenter,
+                map: map,
+                title: 'Center of Medellin'
+            });
+        }
+    </script>
+</head>
+<body onload="initMap()">
+    <h1>Ubicación del Negocio</h1>
+    <div id="map" style="height: 500px; width: 100%;"></div>
+</body>
+
+{% endblock %}
