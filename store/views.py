@@ -1,33 +1,40 @@
-#views.py
-from django.shortcuts import render,redirect
-from.models import Product,Category,Profile
-from django.contrib.auth import authenticate,login,logout
+from django.shortcuts import render, redirect
+
+from ecom import settings
+from .models import Product, Category, Profile
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .forms import SignUpForm,UpdateUserForm,ChangePasswordForm,UserInfoForm
+from .forms import SignUpForm, UpdateUserForm, ChangePasswordForm, UserInfoForm
 from django import forms
 from django.db.models import Q
 from rest_framework import generics
 from .models import Product
 from .serializers import ProductSerializer
+from django.utils.translation import gettext as _
+from django.shortcuts import redirect
+from django.utils import translation
 
-#vista para la API
+
+def set_language(request):
+    user_language = request.GET.get('language', 'es')
+    translation.activate(user_language)
+    response = redirect(request.META.get('HTTP_REFERER'))
+    response.set_cookie(settings.LANGUAGE_COOKIE_NAME, user_language)
+    return response
+
+# Vista para la API
 class ProductListView(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
-
-#test
-
-
+# Vista de filtrado de productos
 def filter_products(request):
-    # Obtener los parámetros del filtro del request GET
     selected_color = request.GET.get('color')
     selected_amargor = request.GET.get('amargor')
     selected_in_discount = request.GET.get('is_sale') == 'true'
     
-    # Filtrar productos basados en los parámetros
     filtered_products = Product.objects.all()
     
     if selected_color:
@@ -39,7 +46,6 @@ def filter_products(request):
     if selected_in_discount:
         filtered_products = filtered_products.filter(is_sale=True)
     
-    # Obtener opciones de colores y niveles de amargor para el filtro
     colors = Product.objects.values_list('color', flat=True).distinct()
     amargors = Product.objects.values_list('amargor', flat=True).distinct()
     
@@ -52,124 +58,109 @@ def filter_products(request):
         'amargors': amargors
     }
     
-    # Renderizar el template con los productos filtrados y las opciones de colores y amargor
     return render(request, 'filtered_products.html', context)
 
-
-
-
-
+# Vista de búsqueda
 def search(request):
-    # Determine if they submitted the form
     if 'searched' in request.GET:
         searched = request.GET['searched']
-        # Query the Products DB Model
         searched_results = Product.objects.filter(name__icontains=searched)
-        # Test for empty query results
         if not searched_results:
-            messages.success(request, "Ese producto no existe. Por favor, inténtelo de nuevo.")
+            messages.success(request, _("Ese producto no existe. Por favor, inténtelo de nuevo."))
             return render(request, "search.html", {})
         else:
             return render(request, "search.html", {'searched': searched_results})
     else:
         return render(request, "search.html", {})
 
-
+# Vista para actualizar información del usuario
 def update_info(request):
     if request.user.is_authenticated:
         try:
-            # Attempt to get the current user's profile
             current_user_profile = Profile.objects.get(user=request.user)
         except Profile.DoesNotExist:
-            # If the profile doesn't exist, create a new one
             current_user_profile = Profile(user=request.user)
             current_user_profile.save()
 
         form = UserInfoForm(request.POST or None, instance=current_user_profile)
         if form.is_valid():
             form.save()
-            messages.success(request, "Your Info Has Been Updated!!")
+            messages.success(request, _("Your Info Has Been Updated!!"))
             return redirect('home')
         return render(request, "update_info.html", {'form': form})
     else:
-        messages.error(request, "You Must Be Logged In To Access That Page!!")
+        messages.error(request, _("You Must Be Logged In To Access That Page!!"))
         return redirect('home')
 
+# Vista para actualizar contraseña
 def update_password(request):
-	if request.user.is_authenticated:
-		current_user = request.user
-		# Did they fill out the form
-		if request.method  == 'POST':
-			form = ChangePasswordForm(current_user, request.POST)
-			# Is the form valid
-			if form.is_valid():
-				form.save()
-				messages.success(request, "Your Password Has Been Updated...")
-				login(request, current_user)
-				return redirect('update_user')
-			else:
-				for error in list(form.errors.values()):
-					messages.error(request, error)
-					return redirect('update_password')
-		else:
-			form = ChangePasswordForm(current_user)
-			return render(request, "update_password.html", {'form':form})
-	else:
-		messages.success(request, "You Must Be Logged In To View That Page...")
-		return redirect('home')
+    if request.user.is_authenticated:
+        current_user = request.user
+        if request.method == 'POST':
+            form = ChangePasswordForm(current_user, request.POST)
+            if form.is_valid():
+                form.save()
+                messages.success(request, _("Your Password Has Been Updated..."))
+                login(request, current_user)
+                return redirect('update_user')
+            else:
+                for error in list(form.errors.values()):
+                    messages.error(request, error)
+                return redirect('update_password')
+        else:
+            form = ChangePasswordForm(current_user)
+            return render(request, "update_password.html", {'form': form})
+    else:
+        messages.success(request, _("You Must Be Logged In To View That Page..."))
+        return redirect('home')
 
-
-
+# Vista para actualizar usuario
 def update_user(request):
-	if request.user.is_authenticated:
-		current_user = User.objects.get(id=request.user.id)
-		user_form = UpdateUserForm(request.POST or None, instance=current_user)
+    if request.user.is_authenticated:
+        current_user = User.objects.get(id=request.user.id)
+        user_form = UpdateUserForm(request.POST or None, instance=current_user)
 
-		if user_form.is_valid():
-			user_form.save()
+        if user_form.is_valid():
+            user_form.save()
+            login(request, current_user)
+            messages.success(request, _("User Has Been Updated!!"))
+            return redirect('home')
+        return render(request, "update_user.html", {'user_form': user_form})
+    else:
+        messages.success(request, _("You Must Be Logged In To Access That Page!!"))
+        return redirect('home')
 
-			login(request, current_user)
-			messages.success(request, "User Has Been Updated!!")
-			return redirect('home')
-		return render(request, "update_user.html", {'user_form':user_form})
-	else:
-		messages.success(request, "You Must Be Logged In To Access That Page!!")
-		return redirect('home')
-
+# Vista para resumen de categorías
 def category_summary(request):
-	categories = Category.objects.all()
-	return render(request, 'category_summary.html', {"categories":categories})	
+    categories = Category.objects.all()
+    return render(request, 'category_summary.html', {"categories": categories})
 
-
-
+# Vista para categoría específica
 def category(request, foo):
-	# Replace Hyphens with Spaces
-	foo = foo.replace('-', ' ')
-	# Grab the category from the url
-	try:
-		# Look Up The Category
-		category = Category.objects.get(name=foo)
-		products = Product.objects.filter(category=category)
-		return render(request, 'category.html', {'products':products, 'category':category})
-	except:
-		messages.success(request, ("That Category Doesn't Exist..."))
-		return redirect('home')
+    foo = foo.replace('-', ' ')
+    try:
+        category = Category.objects.get(name=foo)
+        products = Product.objects.filter(category=category)
+        return render(request, 'category.html', {'products': products, 'category': category})
+    except:
+        messages.success(request, _("That Category Doesn't Exist..."))
+        return redirect('home')
 
-
-def product(request,pk):
+# Vista para producto específico
+def product(request, pk):
     product = Product.objects.get(id=pk)
-    return render(request, 'product.html', {'product':product})
+    return render(request, 'product.html', {'product': product})
 
-
-
+# Vista de inicio
 def home(request):
-    products=Product.objects.all()
-    return render(request, 'home.html',{'products':products})
+    products = Product.objects.all()
+    return render(request, 'home.html', {'products': products})
 
+# Vista de "sobre nosotros"
 def about(request):
-    return render(request, 'about.html', )
+    return render(request, 'about.html')
 
-
+# Vista para login de usuario
 def login_user(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -177,37 +168,32 @@ def login_user(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            messages.success(request, "Has sido logeado")
+            messages.success(request, _("You have been logged in!"))
             return redirect('home')
         else:
-            messages.success(request, "Hubo un error")
+            messages.success(request, _("There was an error logging in"))
             return redirect('login')
     else:
         return render(request, 'login.html', {})
 
-
-
+# Vista para logout de usuario
 def logout_user(request):
     logout(request)
-    messages.success(request, (" Has salido de la pagina"))
+    messages.success(request, _("You have logged out!"))
     return redirect('home')
 
-
+# Vista para registro de usuario
 def register_user(request):
-    form=SignUpForm()
-    if request.method=='POST':
-        form=SignUpForm(request.POST)
+    form = SignUpForm()
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
         if form.is_valid():
             form.save()
-            username=form.cleaned_data['username']
-            password=form.cleaned_data['password1']
-            
-            user=authenticate(username=username, password=password)
-            login(request,user)
-            messages.success(request, (" Ha sido registrado con extio"))
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            messages.success(request, _("You have been registered successfully!"))
             return redirect('update_info')
-
     else:
-        return render(request, 'register.html',{'form':form} )
-    
-
+        return render(request, 'register.html', {'form': form})

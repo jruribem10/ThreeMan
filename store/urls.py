@@ -17,10 +17,5 @@ urlpatterns=[
     path('search/', views.search,name='search'),
     path('filter/', filter_products, name='filter_products'),
     path('api/products/', ProductListView.as_view(), name='product-list'),
-    
-    
-
-
-
-
+    path('set_language/', views.set_language, name='set_language'),
 ]

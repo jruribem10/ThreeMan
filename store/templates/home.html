@@ -1,42 +1,47 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
-    
+{% load i18n %}
 
 <div class="container-fluid mt-4">
     <div class="row">
+        <body>
+            <div class="language-selector">
+                <a href="{% url 'set_language' %}?language=en">English</a>
+                <a href="{% url 'set_language' %}?language=es">Español</a>
+            </div>
         <!-- Barra lateral para filtros -->
         <form method="GET" action="{% url 'filter_products' %}" class="col-md-3 sidebar">
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-dark text-white">Filtrar Productos</div>
+                <div class="card-header bg-dark text-white">{% trans "Filtrar Productos" %}</div>
                 <div class="card-body">
                     <!-- Subcategoría por color -->
-                    <h5>Color de Cerveza</h5>
+                    <h5>{%trans "Color de Cerveza"%}</h5>
                     <select class="form-select mb-3" aria-label="Color de Cerveza" name="color">
-                        <option selected>Selecciona un color</option>
-                        <option value="Roja">Roja</option>
-                        <option value="Negra">Negra</option>
-                        <option value="Rubia">Rubia</option>
+                        <option selected>{%trans "Selecciona un color" %}</option>
+                        <option value="Roja">{%trans "Roja" %}</option>
+                        <option value="Negra">{%trans "Negra" %}</option>
+                        <option value="Rubia">{%trans "Rubia" %}</option>
                     </select>
                     
                     <!-- Subcategoría por nivel de amargor -->
-                    <h5>Nivel de Amargor</h5>
+                    <h5>{%trans "Nivel de Amargor"%}</h5>
                     <select class="form-select mb-3" aria-label="Nivel de Amargor" name="amargor">
-                        <option value="">Selecciona un nivel de amargor</option>
-                        <option value="Bajo">Bajo</option>
-                        <option value="Medio">Medio</option>
-                        <option value="Alto">Alto</option>
+                        <option value="">{%trans "Selecciona un nivel de amargor"%}</option>
+                        <option value="Bajo">{%trans "Bajo"%}</option>
+                        <option value="Medio">{%trans "Medio"%}</option>
+                        <option value="Alto">{%trans "Medio"%}</option>
                     </select>
                     
                     <!-- Filtro de cervezas en descuento -->
-                    <h5>Cervezas en Descuento</h5>
+                    <h5>{%trans "Cervezas en Descuento"%}</h5>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="true" id="is_sale" name="is_sale">
-                        <label class="form-check-label" for="is_sale">Cervezas en Descuento</label>
+                        <label class="form-check-label" for="is_sale">{%trans "Cervezas en Descuento"%}</label>
                     </div>
         
                     <div class="row justify-content-center mt-3">
-                        <button class="btn btn-outline-secondary" type="submit">Aplicar Filtros</button>
+                        <button class="btn btn-outline-secondary" type="submit">{%trans "Aplicar Filtros"%}</button>
                     </div>
                 </div>
             </div>
@@ -50,8 +55,8 @@
             <!-- Encabezado -->
             <header class="bg-dark py-5 text-center text-white mb-4">
                 <div class="container px-4 px-lg-5">
-                    <h1 class="display-4 fw-bolder">Cervezas Artesanales</h1>
-                    <p class="lead fw-normal text-white-50 mb-0">¡Descubre la magia de la cerveza artesanal de Antioquia!</p>
+                    <h1 class="display-4 fw-bolder">{%trans "Cervezas Artesanales"%}</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">{%trans "¡Descubre la magia de la cerveza artesanal de Antioquia!"%}</p>
                 </div>
             </header>
 
@@ -62,7 +67,7 @@
                             <div class="input-group">
                                 <input type="text" class="form-control" placeholder="Buscar productos" name="searched">
                                 <div class="input-group-append">
-                                    <button class="btn btn-outline-secondary" type="submit">Buscar</button>
+                                    <button class="btn btn-outline-secondary" type="submit">{%trans "Buscar"%}</button>
                                 </div>
                             </div>
                         </form>
@@ -79,7 +84,7 @@
                                 <div class="card h-100 shadow-sm">
                                     <!-- Distintivo de venta-->
                                     {% if product.is_sale %}
-                                        <div class="badge bg-danger text-white position-absolute" style="top: 0.5rem; right: 0.5rem">Oferta</div>
+                                        <div class="badge bg-danger text-white position-absolute" style="top: 0.5rem; right: 0.5rem">{%trans "Buscar"%}</div>
                                     {% endif %}
                                     <!-- Imagen del producto-->
                                     <img class="card-img-top" src="{{ product.image.url }}" alt="{{ product.name }}" style="height: 300px; object-fit: cover;" />
@@ -96,7 +101,7 @@
                                     <!-- Acciones del producto-->
                                     <div class="card-footer p-4 border-top-0 bg-transparent">
                                         <div class="text-center">
-                                            <a class="btn btn-outline-dark mt-auto" href="{% url 'product' product.id  %}">Ver producto</a>
+                                            <a class="btn btn-outline-dark mt-auto" href="{% url 'product' product.id  %}">{%trans "Ver producto"%}</a>
                                         </div>
                                     </div>
                                 </div>
