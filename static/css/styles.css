@@ -10,6 +10,18 @@
  * Copyright 2011-2022 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
+ /*Elegir un font*/
+ @import url('https://fonts.googleapis.com/css2?family=Old+Standard+TT&display=swap');
+ @import url('https://fonts.googleapis.com/css2?family=Bitter&display=swap');
+ @import url('https://fonts.googleapis.com/css2?family=Rye&display=swap');
+ @import url('https://fonts.googleapis.com/css2?family=Crete+Round&display=swap');
+ @import url('https://fonts.googleapis.com/css2?family=Special+Elite&display=swap');
+
+ *{
+  font-family: 'Old Standard TT', serif;
+}
+
+
 :root {
   --bs-blue: #0d6efd;
   --bs-indigo: #6610f2;
@@ -91,6 +103,36 @@
   }
 }
 
+
+/* CSS */
+.fixed-search-bar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000; /* Asegura que la barra de búsqueda esté por encima del contenido */
+  transition: top 0.3s; /* Agrega una transición suave al desplazarse */
+}
+/*side bar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;
+  background-color: #f8f9fa; 
+  overflow-y: auto; 
+  z-index: 1000; 
+}
+
+
+.main-content {
+  margin-left: 400px; 
+}
+
+
+.sidebar.is-scrolling {
+  transform: translateY(0); 
+}
 body {
   margin: 0;
   font-family: var(--bs-body-font-family);

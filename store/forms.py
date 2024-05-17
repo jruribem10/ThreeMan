@@ -18,20 +18,23 @@ class SignUpForm(UserCreationForm):
 		super(SignUpForm, self).__init__(*args, **kwargs)
 
 		self.fields['username'].widget.attrs['class'] = 'form-control'
-		self.fields['username'].widget.attrs['placeholder'] = 'User Name'
+		self.fields['username'].widget.attrs['placeholder'] = 'Nombre de usuario'
 		self.fields['username'].label = ''
-		self.fields['username'].help_text = '<span class="form-text text-muted"><small>Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</small></span>'
+		self.fields['username'].help_text = '<span class="form-text text-muted"><small>Requerido. 150 caracteres o menos. Solo letras, dígitos y @/./+/-/_ permitidos.</small></span>'
 
 		self.fields['password1'].widget.attrs['class'] = 'form-control'
-		self.fields['password1'].widget.attrs['placeholder'] = 'Password'
+		self.fields['password1'].widget.attrs['placeholder'] = 'Contraseña'
 		self.fields['password1'].label = ''
-		self.fields['password1'].help_text = '<ul class="form-text text-muted small"><li>Your password can\'t be too similar to your other personal information.</li><li>Your password must contain at least 8 characters.</li><li>Your password can\'t be a commonly used password.</li><li>Your password can\'t be entirely numeric.</li></ul>'
+		self.fields['password1'].help_text = '<ul class="form-text text-muted small"><li>No puede tener semejanza a los otros campos.</li><li>debe contener por lo menos 8 caracteres.</li><li>No puede ser muy comun.</li><li>No pueden ser solo numeros.</li></ul>'
 
 		self.fields['password2'].widget.attrs['class'] = 'form-control'
-		self.fields['password2'].widget.attrs['placeholder'] = 'Confirm Password'
+		self.fields['password2'].widget.attrs['placeholder'] = 'Confirma tu contraseña'
 		self.fields['password2'].label = ''
-		self.fields['password2'].help_text = '<span class="form-text text-muted"><small>Enter the same password as before, for verification.</small></span>'
-
+		self.fields['password2'].help_text = '<span class="form-text text-muted"><small>Ingresa la misma contraseña que antes para verificar.</small></span>'
+		
+		self.fields['first_name'].widget.attrs['placeholder'] = 'Nombre'
+		self.fields['last_name'].widget.attrs['placeholder'] = 'Apellido'
+		self.fields['email'].widget.attrs['placeholder'] = 'Email'
 
 class ChangePasswordForm(SetPasswordForm):
 	class Meta:
@@ -42,14 +45,13 @@ class ChangePasswordForm(SetPasswordForm):
 		super(ChangePasswordForm, self).__init__(*args, **kwargs)
 
 		self.fields['new_password1'].widget.attrs['class'] = 'form-control'
-		self.fields['new_password1'].widget.attrs['placeholder'] = 'Password'
+		self.fields['new_password1'].widget.attrs['placeholder'] = 'Contraseña'
 		self.fields['new_password1'].label = ''
-		self.fields['new_password1'].help_text = '<ul class="form-text text-muted small"><li>Your password can\'t be too similar to your other personal information.</li><li>Your password must contain at least 8 characters.</li><li>Your password can\'t be a commonly used password.</li><li>Your password can\'t be entirely numeric.</li></ul>'
-
+		self.fields['new_password1'].help_text = '<ul class="form-text text-muted small"><li>No puede tener semejanza a los otros campos.</li><li>debe contener por lo menos 8 caracteres.</li><li>No puede ser muy comun</li><li>No pueden ser solo numeros</li></ul>'
 		self.fields['new_password2'].widget.attrs['class'] = 'form-control'
-		self.fields['new_password2'].widget.attrs['placeholder'] = 'Confirm Password'
+		self.fields['new_password2'].widget.attrs['placeholder'] = 'Confirma tu contraseña'
 		self.fields['new_password2'].label = ''
-		self.fields['new_password2'].help_text = '<span class="form-text text-muted"><small>Enter the same password as before, for verification.</small></span>'
+		self.fields['new_password2'].help_text = '<span class="form-text text-muted"><small>Ingresa la misma contraseña que antes para verificar.</small></span>'
 
 
 
@@ -70,9 +72,9 @@ class UpdateUserForm(UserChangeForm):
 		super(UpdateUserForm, self).__init__(*args, **kwargs)
 
 		self.fields['username'].widget.attrs['class'] = 'form-control'
-		self.fields['username'].widget.attrs['placeholder'] = 'User Name'
+		self.fields['username'].widget.attrs['placeholder'] = 'Nombre'
 		self.fields['username'].label = ''
-		self.fields['username'].help_text = '<span class="form-text text-muted"><small>Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</small></span>'
+		self.fields['username'].help_text = '<span class="form-text text-muted"><small>Maximo 150 caracteres. letras, digitos y @/./+/-/_ son los unicos que estan permitidos</small></span>'
 
 class UserInfoForm(forms.ModelForm):
 	phone = forms.CharField(label="", widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Phone'}), required=False)

@@ -1,81 +1,90 @@
-    {% block content %}
+{% block content %}
 
-            <!-- Header-->
-            <header class="bg-dark py-5">
-                <div class="container px-4 px-lg-5 my-5">
-                    <div class="text-center text-white">
-                        <h1 class="display-4 fw-bolder" style="text-align: center;">Factura electronica</h1>
-                        <p class="lead fw-normal text-white-50 mb-0" style="text-align: center;">tus productos</p>
-                    </div>
-                </div>
-            </header>
-            <br/>
-            <div class="container">
-            {% if cart_products %}
-                {% for product in cart_products %}
-                
-    <div class="card mb-3">
-    <div class="row g-0">
-        <div class="col-md-8">
-        <div class="card-body">
-            <center>
-            <h5 class="card-title">{{ product.name }}</h5>
-            <h5 style="text-align: center;">Unitary Price</h5>
-            
-            {% if product.is_sale %}
-            <div class="d-flex justify-content-center small text-warning mb-2">
-                    <div class="bi-star-fill"></div>
-                    &nbsp;&nbsp;Sale!&nbsp;&nbsp;
-                    <div class="bi-star-fill"></div>
-                    </div>
-
-                    <!-- Product price-->
-                    <strike>
-                    ${{ product.price }}
-                    </strike>
-                    &nbsp;
-                    ${{ product.sale_price }}
-
-
-
-            {% else %}
-                ${{ product.price }}
-                
-            {% endif %}
-                <br/><br/>
-            <div class="row justify-content-center">
-        <div class="col-md-2">Quantity:</div>
-                    <div class="col-md-2">
-                    <select class="form-select form-select-sm" id="select{{product.id}}">
-                    
-                {% for key, value in quantities.items %}
-                    {% if key == product.id|slugify %}
-                <option selected>{{ value }}</option>
-                    {% endif %}
-                {% endfor %}
-                    </select>
-                    </div>
-                </div>
-                <br/><br/>
-            
-            
-        </center>
-        </div>
+<!-- Header-->
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder" style="text-align: center;">Factura Electrónica</h1>
+            <p class="lead fw-normal text-white-50 mb-0" style="text-align: center;">Tus Productos</p>
         </div>
     </div>
+</header>
+<br/>
+<div class="container">
+    <div class="row mb-3">
+        <div class="col-md-6 text-end">
+            <p><strong>Método de Pago:</strong> Tarjeta de Crédito</p>
+        </div>
     </div>
 
-
-
-                {% endfor %}
-                <h3 style="text-align: center;">Total: ${{ totals }}</h3>
-
-                <br/><br/><br/>
-                {% else %}
-                Tu carrito esta vacio...
-                <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-            {% endif %}
+    {% if cart_products %}
+        {% for product in cart_products %}
+        <div class="card mb-3">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="{{ product.image_url }}" class="img-fluid rounded-start" alt="{{ product.name }}">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">{{ product.name }}</h5>
+                        <h6 class="text-center">Precio Unitario</h6>
+                        
+                        {% if product.is_sale %}
+                            <div class="d-flex justify-content-center small text-warning mb-2">
+                                <div class="bi-star-fill"></div>
+                                &nbsp;&nbsp;¡En Oferta!&nbsp;&nbsp;
+                                <div class="bi-star-fill"></div>
+                            </div>
+                            <p class="text-center">
+                                <strike>${{ product.price }}</strike>
+                                &nbsp;
+                                ${{ product.sale_price }}
+                            </p>
+                        {% else %}
+                            <p class="text-center">${{ product.price }}</p>
+                        {% endif %}
+                        
+                        <div class="text-center">
+                            <span class="fw-bold">Cantidad:</span>
+                            <select class="form-select form-select-sm d-inline-block w-auto" id="select{{product.id}}">
+                                {% for key, value in quantities.items %}
+                                    {% if key == product.id|slugify %}
+                                        <option selected>{{ value }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
+        {% endfor %}
+        <div class="text-center">
+            <h3>Total: ${{ totals }} cop</h3>
+        </div>
 
+        <!-- Tarjeta de Crédito Información -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p><strong>Nombre en la Tarjeta:</strong> Visa Master card.</p>
+            </div>
+            <div class="col-md-6 text-end">
+                <p><strong>Número de Tarjeta:</strong> **** **** **** 1234</p>
+            </div>
+        </div>
 
-    {% endblock %}
+    {% else %}
+        <div class="text-center">
+            <p>Tu carrito está vacío...</p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Políticas Colombianas -->
+<div class="container mt-5">
+    <h5 class="text-center">Políticas y Condiciones</h5>
+    <p>De acuerdo con la legislación colombiana, todas las ventas están sujetas a la normativa de protección al consumidor. Si tienes algún problema con tu compra, tienes derecho a presentar una reclamación dentro de los 30 días posteriores a la fecha de compra.</p>
+    <p>Para más información, por favor consulta nuestras <a href="/politicas" target="_blank">políticas de devolución y reembolso</a>.</p>
+</div>
+
+{% endblock %}

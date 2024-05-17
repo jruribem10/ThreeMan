@@ -5,3 +5,11 @@
 */
 // This file is intentionally blank
 // Use this file to add JavaScript to your project
+window.addEventListener('scroll', function() {
+    var sidebar = document.querySelector('.sidebar');
+    if (window.scrollY > 100) {
+        sidebar.classList.add('is-scrolling');
+    } else {
+        sidebar.classList.remove('is-scrolling');
+    }
+});

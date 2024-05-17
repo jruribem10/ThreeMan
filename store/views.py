@@ -23,21 +23,37 @@ class ProductListView(generics.ListAPIView):
 
 def filter_products(request):
     # Obtener los parámetros del filtro del request GET
-    color = request.GET.get('color')
-    amargor = request.GET.get('amargor')
-    in_discount = request.GET.get('is_sale')  # Cambiado a 'is_sale' para que coincida con el nombre del checkbox
+    selected_color = request.GET.get('color')
+    selected_amargor = request.GET.get('amargor')
+    selected_in_discount = request.GET.get('is_sale') == 'true'
     
     # Filtrar productos basados en los parámetros
     filtered_products = Product.objects.all()
-    if color:
-        filtered_products = filtered_products.filter(color=color)
-    if amargor:
-        filtered_products = filtered_products.filter(amargor=amargor)
-    if in_discount == 'true':  # Si in_discount es 'true', filtrar los productos en descuento
+    
+    if selected_color:
+        filtered_products = filtered_products.filter(color=selected_color)
+        
+    if selected_amargor:
+        filtered_products = filtered_products.filter(amargor=selected_amargor)
+        
+    if selected_in_discount:
         filtered_products = filtered_products.filter(is_sale=True)
     
-    # Renderizar el template con los productos filtrados y las opciones de categorías y amargor
-    return render(request, 'filtered_products.html', {'products': filtered_products})
+    # Obtener opciones de colores y niveles de amargor para el filtro
+    colors = Product.objects.values_list('color', flat=True).distinct()
+    amargors = Product.objects.values_list('amargor', flat=True).distinct()
+    
+    context = {
+        'products': filtered_products,
+        'selected_color': selected_color,
+        'selected_amargor': selected_amargor,
+        'selected_in_discount': selected_in_discount,
+        'colors': colors,
+        'amargors': amargors
+    }
+    
+    # Renderizar el template con los productos filtrados y las opciones de colores y amargor
+    return render(request, 'filtered_products.html', context)
 
 
 
