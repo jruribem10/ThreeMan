@@ -59,6 +59,8 @@ MIDDLEWARE = [
 ]
 
 LANGUAGE_CODE = 'es'  # Idioma predeterminado
+LANGUAGE_COOKIE_NAME = 'my_language_cookie'
+
 
 LANGUAGES = [
     ('en', _('English')),

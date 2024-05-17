@@ -6,10 +6,7 @@
 <div class="container-fluid mt-4">
     <div class="row">
         <body>
-            <div class="language-selector">
-                <a href="{% url 'set_language' %}?language=en">English</a>
-                <a href="{% url 'set_language' %}?language=es">Español</a>
-            </div>
+            
         <!-- Barra lateral para filtros -->
         <form method="GET" action="{% url 'filter_products' %}" class="col-md-3 sidebar">
             <div class="card shadow-sm mb-4">
@@ -58,7 +55,12 @@
                     <h1 class="display-4 fw-bolder">{%trans "Cervezas Artesanales"%}</h1>
                     <p class="lead fw-normal text-white-50 mb-0">{%trans "¡Descubre la magia de la cerveza artesanal de Antioquia!"%}</p>
                 </div>
+                <div class="language-selector">
+                    <a href="{% url 'set_language' %}?language=en">English</a>
+                    <a href="{% url 'set_language' %}?language=es">Español</a>
+                </div>
             </header>
+           
 
             <div class="row justify-content-end mb-4">
                 <div class="col-md-6">
